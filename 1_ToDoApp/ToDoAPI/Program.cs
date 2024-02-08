@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoAPI.Data;
+using ToDoAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,22 +14,17 @@ var app = builder.Build();
 
 //app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("api/todo", async(AppDbContext context) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var items = await context.ToDos.ToListAsync();
+    return Results.Ok(items);
+});
 
-app.MapGet("/weatherforecast", () =>
+app.MapPost("api/todo", async (AppDbContext context, ToDo todo) =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    await context.ToDos.AddAsync(todo);
+    await context.SaveChangesAsync();
+    return Results.Created($"api/todo/{todo.Id}", todo);
 });
 
 app.Run();
