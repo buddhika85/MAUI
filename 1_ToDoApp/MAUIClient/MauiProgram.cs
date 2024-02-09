@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MAUIClient.DataServices;
+using Microsoft.Extensions.Logging;
 
 namespace MAUIClient
 {
@@ -18,6 +19,8 @@ namespace MAUIClient
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<IRestDataService, RestDataService>();
 
             return builder.Build();
         }
