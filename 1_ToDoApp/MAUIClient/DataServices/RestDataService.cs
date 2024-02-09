@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -18,14 +19,28 @@ namespace MAUIClient.DataServices
 
         public RestDataService()
         {
+            //var httpHelper = new HttpHelper();
+            //var handler = httpHelper.GetInsecureHandler();
+
+            //_httpClient = new HttpClient(handler);
             _httpClient = new HttpClient();
-            _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.2.2.2:5113" : "https://localhost:7113";
+            //_baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:31633" : "https://localhost:44392";
+            _baseAddress = "https://10.0.2.2:44392";
+            //_baseAddress = "http://localhost:31633";
+
             _url = $"{_baseAddress}/api";
 
             _jsonSerializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
+
+#if DEBUG
+            HttpsClientHandlerService handler = new HttpsClientHandlerService();
+            _httpClient = new HttpClient(handler.GetPlatformMessageHandler());
+#else
+            _httpClient = httpClient; new HttpClient();
+#endif
         }
 
         protected internal bool IsInternetAvailable()
@@ -69,7 +84,7 @@ namespace MAUIClient.DataServices
             try
             {
                
-                var response = await _httpClient.DeleteAsync($"{_baseAddress}/todo/{id}");
+                var response = await _httpClient.DeleteAsync($"{_url}/todo/{id}");
                 if (!response.IsSuccessStatusCode)
                 {
                     Debug.WriteLine("----> Not Http 2xx responses");
@@ -95,7 +110,15 @@ namespace MAUIClient.DataServices
 
             try
             {
-                var response = await _httpClient.GetAsync($"{_baseAddress}/todo");
+                var response = await _httpClient.GetAsync($"{_url}/todo");
+
+                //var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_url}/todo"))
+                //{
+                //    Version = HttpVersion.Version10
+                //};
+                //var response = await _httpClient.SendAsync(httpRequestMessage);
+
+
                 if (!response.IsSuccessStatusCode)
                 {
                     Debug.WriteLine("----> Not Http 2xx responses");

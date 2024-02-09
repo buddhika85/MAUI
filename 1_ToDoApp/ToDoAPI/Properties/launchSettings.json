@@ -33,6 +33,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "api/todo",
+      "applicationUrl": "https://localhost:7113;http://localhost:5015",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
