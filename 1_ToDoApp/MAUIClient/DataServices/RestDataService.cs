@@ -24,8 +24,8 @@ namespace MAUIClient.DataServices
 
             //_httpClient = new HttpClient(handler);
             _httpClient = new HttpClient();
-            //_baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:31633" : "https://localhost:44392";
-            _baseAddress = "https://10.0.2.2:44392";
+            _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:31633" : "https://localhost:44392";
+            //_baseAddress = "https://10.0.2.2:44392";
             //_baseAddress = "http://localhost:31633";
 
             _url = $"{_baseAddress}/api";
